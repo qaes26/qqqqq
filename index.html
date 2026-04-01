@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>امتحان الدوال الحسابية - إعداد قيس جازي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #f3f4f6; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        
+        /* تنسيق أزرار الاختيار */
+        .radio-custom:checked + label {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+            color: #166534;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(34, 197, 94, 0.1);
+        }
+        
+        .correct-answer { background-color: #bbf7d0 !important; border-color: #16a34a !important; color: #166534 !important; font-weight: bold;}
+        .wrong-answer { background-color: #fecaca !important; border-color: #dc2626 !important; color: #991b1b !important; font-weight: bold;}
+        
+        /* شريط التمرير */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-gray-800 pb-28">
+
+    <!-- الترويسة (Header) -->
+    <header class="bg-gradient-to-br from-green-700 to-emerald-600 text-white shadow-md sticky top-0 z-50">
+        <div class="px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm shrink-0">
+                    <i class="ph-bold ph-calculator text-3xl text-green-100"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold leading-tight">امتحان الدوال الحسابية</h1>
+                    <p class="text-sm text-green-100 opacity-90 mt-0.5" dir="ltr">SUM, AVERAGE, MIN, MAX</p>
+                </div>
+            </div>
+            
+            <div class="bg-white text-green-800 px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-sm w-full sm:w-auto justify-center">
+                <i class="ph-fill ph-check-badge text-lg text-green-600"></i>
+                إعداد: قيس جازي
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="w-full max-w-3xl mx-auto px-4 py-6">
+        
+        <!-- بطاقة التعليمات -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-8 border-r-4 border-r-green-500">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="ph-fill ph-info text-xl text-green-600"></i>
+                <h2 class="text-lg font-bold text-gray-800">تعليمات الامتحان</h2>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">
+                هذا الامتحان مخصص <strong>فقط</strong> للدوال الحسابية الأربعة الأساسية في الإكسل. اختر الإجابة الصحيحة للأسئلة المتعددة واضغط "تسليم". بالنسبة للأسئلة المقالية، يمكنك الضغط على "إظهار الجواب" لمعرفة الإجابة النموذجية فوراً.
+            </p>
+        </div>
+
+        <form id="quizForm" onsubmit="submitQuiz(event)">
+            
+            <!-- قسم الاختيار من متعدد -->
+            <div class="mb-10">
+                <div class="flex items-center gap-2 mb-5">
+                    <div class="bg-green-100 p-1.5 rounded-lg text-green-700">
+                        <i class="ph-bold ph-list-numbers text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">أسئلة الاختيار من متعدد</h3>
+                </div>
+
+                <div id="mcq-container" class="flex flex-col gap-5">
+                    <!-- سيتم حقن الأسئلة هنا -->
+                </div>
+            </div>
+
+            <!-- قسم الأسئلة المقالية -->
+            <div class="mb-6">
+                <div class="flex items-center gap-2 mb-5">
+                    <div class="bg-teal-100 p-1.5 rounded-lg text-teal-700">
+                        <i class="ph-bold ph-text-aa text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">الأسئلة المقالية (تقييم ذاتي)</h3>
+                </div>
+
+                <div id="essay-container" class="flex flex-col gap-5">
+                    <!-- سيتم حقن الأسئلة المقالية هنا -->
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="text-center py-6 text-gray-500 text-sm">
+        <p>جامعة إربد الأهلية - قسم نظم المعلومات الإدارية</p>
+        <p class="font-bold text-green-700 mt-1">جميع الحقوق محفوظة &copy; إعداد: قيس جازي</p>
+    </footer>
+
+    <!-- شريط التسليم السفلي (مثبت) -->
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-50 p-4 pb-safe">
+        <div class="max-w-3xl mx-auto flex flex-row items-center justify-between gap-4">
+            
+            <div id="result-summary" class="hidden flex-col items-center justify-center w-1/3">
+                <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">النتيجة</span>
+                <span id="score-display" class="text-2xl font-black text-green-600 leading-none" dir="ltr"></span>
+            </div>
+            
+            <button type="submit" form="quizForm" id="submit-btn" class="flex-1 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white py-3.5 px-4 rounded-xl font-bold text-base shadow-md transition-all flex items-center justify-center gap-2">
+                <i class="ph-bold ph-paper-plane-tilt text-xl"></i>
+                <span>تسليم أسئلة الاختيار من متعدد</span>
+            </button>
+            
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // الأسئلة تركز فقط على SUM, AVERAGE, MIN, MAX
+        const mcqQuestions = [
+            { id: 1, text: "أي من الدوال التالية تُستخدم لإيجاد القيمة العظمى (الأكبر) ضمن مجموعة من الأرقام؟", options: ["SUM", "MAX", "MIN", "AVERAGE"], correct: 1 },
+            { id: 2, text: "وظيفة الدالة SUM في برنامج إكسل هي:", options: ["إيجاد المتوسط الحسابي", "إيجاد أعلى قيمة", "جمع الأرقام في نطاق معين", "حساب عدد الخلايا"], correct: 2 },
+            { id: 3, text: "إذا أردت حساب (المعدل) لعلامات طالب في عدة مواد، الدالة الأنسب لاستخدامها هي:", options: ["AVERAGE", "SUM", "MAX", "MIN"], correct: 0 },
+            { id: 4, text: "ماذا تفعل دالة MIN؟", options: ["تحول الحروف إلى صغيرة", "تُرجع أقل قيمة رقمية في النطاق", "تطرح رقمين من بعضهما", "تجمع الأرقام السالبة فقط"], correct: 1 },
+            { id: 5, text: "عند استخدام دالة AVERAGE على نطاق يحتوي على خلايا بها (نصوص) بالإضافة إلى أرقام، فإن إكسل سيقوم بـ:", options: ["إظهار رسالة خطأ", "احتساب النصوص كأصفار", "تجاهل الخلايا التي تحتوي على نصوص تماماً", "حساب عدد الحروف"], correct: 2 },
+            { id: 6, text: "هل تستطيع دالة SUM جمع الأرقام السالبة ضمن نطاق الخلايا؟", options: ["نعم، تجمعها بشكل طبيعي مع الأرقام الموجبة", "لا، تجمع الأرقام الموجبة فقط", "تُظهر خطأ", "تحولها إلى أرقام موجبة ثم تجمعها"], correct: 0 },
+            { id: 7, text: "إذا كان النطاق (A1:A3) يحتوي على القيم التالية: (5 ، كلمة 'مرحباً' ، 10). ما هي نتيجة =MAX(A1:A3) ؟", options: ["10", "15", "خطأ", "5"], correct: 0 },
+            { id: 8, text: "كيف يجب كتابة النطاق داخل أقواس الدالة لجمع الخلايا من A1 إلى A10 بشكل صحيح؟", options: ["=SUM(A1+A10)", "=SUM(A1,A10)", "=SUM(A1:A10)", "=SUM(A1-A10)"], correct: 2 },
+            { id: 9, text: "لنفترض أن لديك القيم (4, 4, 4) في ثلاث خلايا. ما هي نتيجة =AVERAGE() لهذه الخلايا؟", options: ["12", "4", "3", "16"], correct: 1 },
+            { id: 10, text: "لإيجاد (أرخص) منتج من قائمة أسعار طويلة، أي دالة سنستخدم؟", options: ["AVERAGE", "SUM", "MAX", "MIN"], correct: 3 },
+            { id: 11, text: "إذا كانت لديك القيم (10, 20, 30) واستخدمت دالة =MIN()، فالنتيجة ستكون:", options: ["10", "20", "30", "60"], correct: 0 },
+            { id: 12, text: "لمعرفة (إجمالي) المبيعات الشهرية لمتجر، الدالة الأنسب هي:", options: ["AVERAGE", "MIN", "MAX", "SUM"], correct: 3 }
+        ];
+
+        const essayQuestions = [
+            { 
+                id: 13, 
+                text: "اشرح باختصار آلية عمل دالة AVERAGE رياضياً. (كيف تقوم بحساب النتيجة؟)", 
+                modelAnswer: "دالة AVERAGE (المتوسط الحسابي) تقوم أولاً بجمع الأرقام الموجودة في النطاق المحدد، ثم تقسم ناتج المجموع على (عدد) هذه القيم. وتتجاهل الخلايا الفارغة والنصوص أثناء هذه العملية."
+            },
+            { 
+                id: 14, 
+                text: "في جدول يحتوي على رواتب الموظفين (أرقام موجبة) وسلفيات أو خصومات (مسجلة كأرقام سالبة). ماذا سيحدث إذا استخدمنا دالة SUM لجمع هذا العمود بالكامل؟", 
+                modelAnswer: "دالة SUM ستتعامل مع الأرقام السالبة بشكل رياضي دقيق. أي أنها ستجمع الرواتب الموجبة وتطرح منها الخصومات (الأرقام السالبة) لتعطيك (صافي المجموع النهائي)."
+            },
+            { 
+                id: 15, 
+                text: "أعطِ مثالاً عملياً يوضح متى نحتاج لاستخدام الدالتين MAX و MIN في نفس الجدول.", 
+                modelAnswer: "مثال: في جدول لتسجيل درجات الحرارة لمدينة خلال شهر كامل، نستخدم دالة MAX لمعرفة (أعلى درجة حرارة) سُجلت، ونستخدم دالة MIN لمعرفة (أدنى درجة حرارة) سُجلت خلال نفس الشهر لتحليل حالة الطقس."
+            }
+        ];
+
+        // حقن أسئلة الاختيار من متعدد
+        const mcqContainer = document.getElementById('mcq-container');
+        mcqQuestions.forEach((q, index) => {
+            let optionsHTML = '';
+            q.options.forEach((opt, optIndex) => {
+                optionsHTML += `
+                    <div class="relative w-full">
+                        <input type="radio" name="q${q.id}" id="q${q.id}_opt${optIndex}" value="${optIndex}" class="peer hidden radio-custom" required>
+                        <label for="q${q.id}_opt${optIndex}" class="flex items-center w-full p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all text-sm sm:text-base">
+                            <span class="w-6 h-6 border-2 border-gray-300 rounded-full ml-3 flex items-center justify-center peer-checked:border-green-500 peer-checked:bg-green-500 shrink-0 relative transition-colors">
+                                <span class="w-2.5 h-2.5 bg-green-500 rounded-full opacity-0 peer-checked:opacity-100 peer-checked:bg-white transition-opacity"></span>
+                            </span>
+                            <span class="flex-1 leading-snug">${opt}</span>
+                        </label>
+                    </div>
+                `;
+            });
+
+            mcqContainer.innerHTML += `
+                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm question-card w-full" id="mcq-card-${q.id}">
+                    <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-4 leading-relaxed flex items-start gap-2">
+                        <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-sm shrink-0 mt-0.5" dir="ltr">${index + 1}</span> 
+                        <span>${q.text}</span>
+                    </h4>
+                    <div class="flex flex-col gap-2.5 w-full" id="options-container-${q.id}">
+                        ${optionsHTML}
+                    </div>
+                    <div id="mcq-feedback-${q.id}" class="mt-4 hidden p-3 rounded-xl text-sm font-bold flex items-center gap-2"></div>
+                </div>
+            `;
+        });
+
+        // حقن الأسئلة المقالية
+        const essayContainer = document.getElementById('essay-container');
+        essayQuestions.forEach((q, index) => {
+            essayContainer.innerHTML += `
+                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm question-card w-full" id="essay-card-${q.id}">
+                    <h4 class="text-base sm:text-lg font-bold text-gray-800 mb-4 leading-relaxed flex items-start gap-2">
+                        <span class="bg-teal-100 text-teal-800 px-2 py-0.5 rounded text-sm shrink-0 mt-0.5" dir="ltr">${index + 13}</span> 
+                        <span>${q.text}</span>
+                    </h4>
+                    
+                    <textarea name="eq${q.id}" id="eq${q.id}" rows="3" class="w-full p-4 mb-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:bg-white outline-none resize-none text-sm sm:text-base transition-colors" placeholder="فكر في الإجابة واكتبها هنا إذا أردت..."></textarea>
+                    
+                    <div class="mb-2">
+                        <button type="button" onclick="toggleAnswer(${q.id})" class="text-teal-700 hover:text-teal-900 font-bold text-sm flex items-center gap-1 bg-teal-50 hover:bg-teal-100 px-4 py-2 rounded-lg transition-colors border border-teal-200">
+                            <i id="icon-eq${q.id}" class="ph-bold ph-eye"></i>
+                            <span id="btn-text-eq${q.id}">إظهار الجواب</span>
+                        </button>
+                    </div>
+
+                    <div id="essay-feedback-${q.id}" class="hidden mt-3">
+                        <div class="bg-teal-50 border-r-4 border-teal-500 p-4 rounded-l-xl shadow-inner">
+                            <h5 class="font-bold text-teal-800 mb-2 flex items-center gap-2 text-sm">
+                                <i class="ph-fill ph-check-circle text-lg"></i> الإجابة النموذجية:
+                            </h5>
+                            <p class="text-teal-900 text-sm leading-relaxed">${q.modelAnswer}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // دالة إظهار/إخفاء الجواب المقالي (تعمل بشكل مستقل بدون تسليم الامتحان)
+        function toggleAnswer(id) {
+            const feedbackDiv = document.getElementById(`essay-feedback-${id}`);
+            const btnText = document.getElementById(`btn-text-eq${id}`);
+            const icon = document.getElementById(`icon-eq${id}`);
+
+            if (feedbackDiv.classList.contains('hidden')) {
+                feedbackDiv.classList.remove('hidden');
+                btnText.innerText = 'إخفاء الجواب';
+                icon.classList.replace('ph-eye', 'ph-eye-closed');
+            } else {
+                feedbackDiv.classList.add('hidden');
+                btnText.innerText = 'إظهار الجواب';
+                icon.classList.replace('ph-eye-closed', 'ph-eye');
+            }
+        }
+
+        // دالة تصحيح أسئلة الاختيار من متعدد
+        function submitQuiz(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submit-btn');
+            const btnText = btn.querySelector('span');
+            const btnIcon = btn.querySelector('i');
+            
+            btn.classList.replace('bg-green-600', 'bg-gray-800');
+            btn.classList.replace('hover:bg-green-700', 'hover:bg-gray-900');
+            btn.classList.replace('active:bg-green-800', 'active:bg-black');
+            btnText.innerText = 'تم تسجيل الإجابات وعرض النتيجة';
+            btnIcon.className = 'ph-bold ph-check-circle text-xl text-green-400';
+            btn.disabled = true;
+
+            let score = 0;
+
+            mcqQuestions.forEach(q => {
+                const selectedOption = document.querySelector(`input[name="q${q.id}"]:checked`);
+                const feedbackDiv = document.getElementById(`mcq-feedback-${q.id}`);
+                const card = document.getElementById(`mcq-card-${q.id}`);
+                
+                document.querySelectorAll(`input[name="q${q.id}"]`).forEach(radio => radio.disabled = true);
+
+                if (selectedOption) {
+                    const selectedValue = parseInt(selectedOption.value);
+                    const labelSelected = document.querySelector(`label[for="${selectedOption.id}"]`);
+                    const labelCorrect = document.querySelector(`label[for="q${q.id}_opt${q.correct}"]`);
+
+                    const innerDot = labelSelected.querySelector('.bg-green-500.opacity-0');
+                    if(innerDot) innerDot.classList.replace('opacity-0', 'opacity-100');
+
+                    if (selectedValue === q.correct) {
+                        score++;
+                        labelSelected.classList.add('correct-answer');
+                        feedbackDiv.innerHTML = '<i class="ph-fill ph-check-circle text-xl"></i> إجابة صحيحة';
+                        feedbackDiv.className = "mt-4 p-3 rounded-xl text-sm font-bold bg-green-50 text-green-700 flex items-center gap-2 border border-green-100";
+                        card.classList.add('border-green-200');
+                    } else {
+                        labelSelected.classList.add('wrong-answer');
+                        labelCorrect.classList.add('correct-answer');
+                        
+                        const correctInnerDot = labelCorrect.querySelector('.bg-green-500.opacity-0');
+                        if(correctInnerDot) {
+                            correctInnerDot.classList.replace('opacity-0', 'opacity-100');
+                        }
+
+                        feedbackDiv.innerHTML = `<i class="ph-fill ph-x-circle text-xl"></i> إجابة خاطئة. الصحيح: <span class="ml-1 font-bold">${q.options[q.correct]}</span>`;
+                        feedbackDiv.className = "mt-4 p-3 rounded-xl text-sm font-bold bg-red-50 text-red-700 flex items-start gap-2 border border-red-100";
+                        card.classList.add('border-red-200');
+                    }
+                }
+            });
+
+            // عرض النتيجة
+            const summaryDiv = document.getElementById('result-summary');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            scoreDisplay.innerText = `${score}/12`;
+            summaryDiv.classList.replace('hidden', 'flex');
+
+            // التمرير السلس لأعلى الصفحة لرؤية الأخطاء
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+
